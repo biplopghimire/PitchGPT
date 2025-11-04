@@ -1,0 +1,3 @@
+{
+  "default_analysis": "Analyze this startup pitch and provide:\n1. Two potential risks\n2. Three follow-up questions for due diligence\n\nStructure your response in clear sections with bullet points.\nPitch: {pitch_text}"
+}
