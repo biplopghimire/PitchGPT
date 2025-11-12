@@ -1,17 +1,21 @@
-# PitchGPT 🚀
-
-AI-powered pitch deck analyzer that evaluates startup companies by highlighting specific investment opportunities and risks using RAG (Retrieval-Augmented Generation) with industry data sources.
-
-**Powered by Scottie Ventures**
+<div align="center">
+  <img src="static/scottie_ventures.logo.png" alt="Scottie Ventures" width="400"/>
+  
+  # PitchGPT
+  
+  AI-powered pitch deck analyzer that evaluates startup companies by highlighting specific investment opportunities and risks using RAG (Retrieval-Augmented Generation) with industry data sources.
+  
+  **Powered by Scottie Ventures**
+</div>
 
 ---
 
 ## Features
 
-- 🤖 **AI Analysis**: Gemini-powered pitch deck evaluation
-- 📚 **RAG Integration**: Retrieves relevant context from SV developed industry reports and other popular industry reports and data
-- 🎨 **Modern Web UI**: Clean, responsive interface with Scottie Ventures branding
-- 📄 **Source Citations**: View and download referenced source documents
+- **AI Analysis**: Gemini-powered pitch deck evaluation
+- **RAG Integration**: Retrieves relevant context from SV developed industry reports and other popular industry reports and data
+- **Web UI**: Clean, responsive interface with Scottie Ventures branding
+- **Source Citations**: View and download referenced source documents
 
 ---
 
@@ -168,6 +172,6 @@ python -m pytest tests/
 ## Contributors
 
 - **Biplop Ghimire**
-- **Ethan**
+- **Ethan Yeo**
 
 **Powered by Scottie Ventures**
