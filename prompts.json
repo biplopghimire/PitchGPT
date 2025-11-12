@@ -1,3 +1,3 @@
 {
-  "default_analysis": "Analyze this startup pitch and provide:\n1. Two potential risks\n2. Three follow-up questions for due diligence\n\nStructure your response in clear sections with bullet points.\nPitch: {pitch_text}"
+  "default_analysis": "Analyze this startup pitch and provide:\n1. Two potential risks\n2. Three follow-up questions for due diligence\n\nUse the retrieved context to strengthen or challenge your reasoning.\n\nPitch:\n{pitch_text}\n\nRetrieved Context:\n{context}\n\n---\nFormat your response clearly:\n\n**Risks:**\n- ...\n- ...\n\n**Follow-up Questions:**\n- ...\n- ...\n- ..."
 }

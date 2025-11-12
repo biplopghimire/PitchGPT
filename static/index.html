@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PitchGPT - AI Pitch Deck Analyzer</title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo-section">
+                <img src="/static/scottie_ventures.logo.png" alt="Scottie Ventures">
+                <div class="title-section">
+                    <h1>PitchGPT</h1>
+                    <p>by Scottie Ventures</p>
+                </div>
+            </div>
+            <div class="header-tagline">
+                AI-Powered Pitch Analysis
+            </div>
+        </header>
+
+        <div class="content">
+            <div class="input-section">
+                <label for="pitch">Enter Your Pitch Deck:</label>
+                <textarea 
+                    id="pitch" 
+                    rows="12" 
+                    placeholder="Paste your startup pitch deck here...
+
+Include:
+• Company name and problem statement
+• Your solution
+• Market size and opportunity
+• Traction and metrics
+• Funding ask and use of funds
+• Team background"
+                ></textarea>
+
+                <div class="button-container">
+                    <button class="example-btn" onclick="loadExample()">Load Example</button>
+                    <button class="clear-btn" onclick="clearAll()">Clear</button>
+                    <button class="analyze-btn" onclick="analyzePitch()" id="analyzeBtn">Analyze Pitch</button>
+                </div>
+            </div>
+
+            <div class="output-section">
+                <div id="loading" class="loading hidden">
+                    <div class="spinner"></div>
+                    <p>Analyzing your pitch deck...</p>
+                </div>
+                
+                <div id="resultsContainer" class="hidden">
+                    <label>Analysis Results:</label>
+                    
+                    <div id="sourcesButton" class="sources-button-container hidden">
+                        <button class="toggle-btn" onclick="openSourcesModal()">
+                            📚 View Sources Referenced
+                        </button>
+                    </div>
+
+                    <div id="result" class="result"></div>
+                </div>
+
+        <!-- Sources Modal Overlay -->
+        <div id="sourcesModal" class="modal hidden" style="display: none;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>📚 Sources Referenced</h2>
+                    <button class="close-btn" onclick="closeSourcesModal()">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div id="sourcesList" class="sources-list"></div>
+                </div>
+            </div>
+        </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>PitchGPT | Developed by Biplop Ghimire and Ethan Yeo</p>
+        </footer>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script>
+        const examplePitch = `Company: EcoCharge Solutions
+Problem: Electric vehicle charging is unreliable, slow, and hard to find in urban areas.
+Solution: Smart urban charging pods that integrate with existing parking meters.
+Market: $5B addressable market in top 10 US cities.
+Traction: 
+- 50 pods installed in Boston
+- $200K monthly recurring revenue
+- 98% uptime rate
+- Partnership with 2 major parking operators
+
+Ask: Raising $2M seed round
+- 60% for hardware production
+- 30% for city expansion
+- 10% for team growth
+
+Team:
+- CEO: Former Tesla charging infrastructure lead
+- CTO: MIT electrical engineering PhD
+- COO: Ex-SpotHero operations director`;
+
+        function loadExample() {
+            document.getElementById('pitch').value = examplePitch;
+        }
+
+        function clearAll() {
+            document.getElementById('pitch').value = '';
+            document.getElementById('resultsContainer').classList.add('hidden');
+            document.getElementById('result').innerHTML = '';
+            document.getElementById('sourcesButton').classList.add('hidden');
+            document.getElementById('sourcesList').innerHTML = '';
+            closeSourcesModal();
+        }
+
+        function openSourcesModal() {
+            const modal = document.getElementById('sourcesModal');
+            modal.style.display = 'flex';
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden'; // Prevent background scrolling
+        }
+
+        function closeSourcesModal(event) {
+            if (event) {
+                event.stopPropagation();
+            }
+            const modal = document.getElementById('sourcesModal');
+            modal.style.display = 'none';
+            modal.classList.add('hidden');
+            document.body.style.overflow = ''; // Restore scrolling
+        }
+
+        // Close modal on Escape key or clicking outside
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeSourcesModal();
+            }
+        });
+
+        // Close modal when clicking on the background
+        document.addEventListener('DOMContentLoaded', () => {
+            const modal = document.getElementById('sourcesModal');
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    closeSourcesModal();
+                }
+            });
+        });
+
+        function displaySources(contextText) {
+            const sourcesButton = document.getElementById('sourcesButton');
+            const sourcesList = document.getElementById('sourcesList');
+            
+            if (!contextText || contextText.trim() === '' || contextText.includes('No retrieved context')) {
+                sourcesButton.classList.add('hidden');
+                return;
+            }
+            
+            // Parse the context - format is:
+            // - Source: filename (page X)
+            //   - snippet 1
+            //   - snippet 2
+            const sourceBlocks = contextText.split(/^- Source:/im).filter(s => s.trim());
+            
+            if (sourceBlocks.length > 0) {
+                sourcesButton.classList.remove('hidden');
+                
+                sourcesList.innerHTML = sourceBlocks.map(block => {
+                    const lines = block.trim().split('\n');
+                    let header = lines[0].trim();
+                    const snippets = lines.slice(1)
+                        .filter(l => l.trim().startsWith('-'))
+                        .map(l => l.replace(/^\s*-\s*/, '').trim());
+                    
+                    // Extract full path and clean filename
+                    // Format: "pitchgpt_rag/data/filename.pdf (page X)"
+                    const pathMatch = header.match(/(.+?)(?:\s*\(page\s+\d+\))?$/);
+                    if (pathMatch) {
+                        const fullPath = pathMatch[1].trim();
+                        const filename = fullPath.split('/').pop(); // Get just the filename
+                        const pageMatch = header.match(/\(page\s+(\d+)\)/i);
+                        const pageInfo = pageMatch ? ` (page ${pageMatch[1]})` : '';
+                        
+                        // Create download link - use /data endpoint
+                        const downloadPath = `/data/${filename}`;
+                        
+                        return `
+                            <div class="source-card">
+                                <div class="source-header">
+                                    <span class="source-icon"></span>
+                                    <a href="${downloadPath}" download="${filename}" class="source-link" title="Download ${filename}">
+                                        ${filename}${pageInfo}
+                                    </a>
+                                </div>
+                                ${snippets.length > 0 ? `
+                                    <div class="source-snippets">
+                                        ${snippets.map(s => `<div class="source-snippet">"${s}"</div>`).join('')}
+                                    </div>
+                                ` : ''}
+                            </div>
+                        `;
+                    }
+                    
+                    // Fallback if parsing fails
+                    return `
+                        <div class="source-card">
+                            <div class="source-header">
+                                <span class="source-icon">📄</span>
+                                <span>${header}</span>
+                            </div>
+                            ${snippets.length > 0 ? `
+                                <div class="source-snippets">
+                                    ${snippets.map(s => `<div class="source-snippet">"${s}"</div>`).join('')}
+                                </div>
+                            ` : ''}
+                        </div>
+                    `;
+                }).join('');
+            } else {
+                sourcesButton.classList.add('hidden');
+            }
+        }
+
+        async function analyzePitch() {
+            const pitchText = document.getElementById('pitch').value.trim();
+            
+            if (!pitchText) {
+                alert('Please enter a pitch deck to analyze');
+                return;
+            }
+
+            const resultDiv = document.getElementById('result');
+            const loadingDiv = document.getElementById('loading');
+            const analyzeBtn = document.getElementById('analyzeBtn');
+
+            // Show loading
+            loadingDiv.classList.remove('hidden');
+            resultDiv.innerHTML = '';
+            analyzeBtn.disabled = true;
+
+            try {
+                const response = await fetch('/analyze', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        pitch_text: pitchText
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.success) {
+                    // Show results container
+                    document.getElementById('resultsContainer').classList.remove('hidden');
+                    
+                    // Display sources if available
+                    if (data.context) {
+                        displaySources(data.context);
+                    }
+                    
+                    // Render main analysis as Markdown
+                    resultDiv.innerHTML = marked.parse(data.analysis);
+                    resultDiv.classList.remove('error');
+                } else {
+                    document.getElementById('resultsContainer').classList.remove('hidden');
+                    resultDiv.innerHTML = `<strong>Error:</strong> ${data.detail || data.error || 'Analysis failed'}`;
+                    resultDiv.classList.add('error');
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<strong>Error:</strong> ${error.message}. Make sure the API server is running.`;
+                resultDiv.classList.add('error');
+            } finally {
+                loadingDiv.classList.add('hidden');
+                analyzeBtn.disabled = false;
+            }
+        }
+
+        // Allow Enter+Cmd/Ctrl to submit
+        document.getElementById('pitch').addEventListener('keydown', (e) => {
+            if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
+                analyzePitch();
+            }
+        });
+    </script>
+</body>
+</html>
