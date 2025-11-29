@@ -56,6 +56,7 @@ class PitchRequest(BaseModel):
 class PitchResponse(BaseModel):
     analysis: str = Field(..., description="The AI-generated analysis in Markdown format")
     context: Optional[str] = Field(default=None, description="The retrieved RAG context sources")
+    prompt: Optional[str] = Field(default=None, description="The full prompt sent to the model")
     success: bool = Field(default=True)
     error: Optional[str] = Field(default=None)
 
@@ -106,6 +107,18 @@ async def analyze_pitch(request: PitchRequest):
         from pitchgpt_rag.src.rag_context import retrieve_context
         context = retrieve_context(request.pitch_text, k=6)
         
+        # Build the prompt for display
+        if request.custom_prompt:
+            prompt_template = request.custom_prompt
+        else:
+            prompt_template = analyzer.prompts.get(request.prompt_key, analyzer.prompts.get('default_analysis', '{pitch_text}'))
+        
+        # Ensure template can accept {context}
+        if "{context}" not in prompt_template:
+            prompt_template = f"{prompt_template}\n\nContext:\n{{context}}"
+        
+        full_prompt = prompt_template.format(pitch_text=request.pitch_text, context=context)
+        
         analysis = analyzer.analyze_pitch(
             pitch_text=request.pitch_text,
             prompt_key=request.prompt_key,
@@ -115,6 +128,7 @@ async def analyze_pitch(request: PitchRequest):
         return PitchResponse(
             analysis=analysis,
             context=context,
+            prompt=full_prompt,
             success=True
         )
     
