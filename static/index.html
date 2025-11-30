@@ -4,29 +4,36 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PitchGPT - AI Pitch Deck Analyzer</title>
-    <link rel="stylesheet" href="/static/styles.css">
+    <link rel="stylesheet" href="/static/styles.css?v=2">
 </head>
 <body>
     <div class="container">
-        <header>
-            <div class="logo-section">
+        <div class="hero-section">
+            <div class="logo-badge">
                 <img src="/static/scottie_ventures.logo.png" alt="Scottie Ventures">
-                <div class="title-section">
-                    <h1>PitchGPT</h1>
-                    <p>by Scottie Ventures</p>
-                </div>
             </div>
-            <div class="header-tagline">
-                AI-Powered Pitch Analysis
-            </div>
-        </header>
+            <h1 class="hero-title">PitchGPT</h1>
+            <p class="hero-subtitle">AI-Powered Pitch Analysis by Scottie Ventures</p>
+            <p class="hero-description">Transform your startup pitch into actionable insights with cutting-edge AI analysis</p>
+        </div>
 
         <div class="content">
-            <div class="input-section">
-                <label for="pitch">Enter Your Pitch Deck:</label>
+            <div class="input-card">
+                <div class="card-header">
+                    <h2 class="card-header-title">Your Pitch Deck</h2>
+                    <div class="quick-actions">
+                        <button class="quick-action-btn" onclick="loadExample()">
+                            <span>📝</span> Example
+                        </button>
+                        <button class="quick-action-btn" onclick="clearAll()">
+                            <span>🗑️</span> Clear
+                        </button>
+                    </div>
+                </div>
                 <textarea 
                     id="pitch" 
-                    rows="12" 
+                    rows="12"
+                    class="premium-textarea" 
                     placeholder="Paste your startup pitch deck here...
 
 Include:
@@ -37,97 +44,51 @@ Include:
 • Funding ask and use of funds
 • Team background"
                 ></textarea>
-
-                <div class="button-container">
-                    <button class="example-btn" onclick="loadExample()">Load Example</button>
-                    <button class="clear-btn" onclick="clearAll()">Clear</button>
-                </div>
             </div>
 
-            <div class="analysis-type-section">
-                <div class="section-header">
-                    <h3 class="section-title">Select Your Analysis Depth</h3>
-                    <p class="section-subtitle">Choose how detailed you want the AI analysis to be</p>
+            <div class="analysis-type-section-premium">
+                <div class="section-header-premium">
+                    <h2 class="section-title-premium">Select Analysis Depth</h2>
+                    <p class="section-subtitle-premium">Choose the level of detail for your AI-powered insights</p>
                 </div>
-                <div class="analysis-cards">
+                <div class="analysis-cards-premium">
                     <input type="radio" name="analysisType" id="concise" value="concise_analysis" class="card-radio">
-                    <label for="concise" class="analysis-card">
-                        <span class="preview-icon" onclick="previewPrompt('concise_analysis', event)" title="Preview prompt template">?</span>
-                        <div class="card-icon">⚡</div>
-                        <div class="card-title">Quick</div>
-                        <div class="card-description">2 risks, 2 questions</div>
-                        <div class="card-time">⏱ ~30 sec</div>
+                    <label for="concise" class="analysis-card-premium">
+                        <span class="preview-icon-premium" onclick="previewPrompt('concise_analysis', event)" title="Preview prompt template">?</span>
+                        <div class="card-icon-premium">⚡</div>
+                        <div class="card-content-premium">
+                            <div class="card-title-premium">Quick Analysis</div>
+                            <div class="card-description-premium">Fast insights • 2 risks • 2 questions</div>
+                            <div class="card-time-premium">⏱ ~30 seconds</div>
+                        </div>
                     </label>
 
                     <input type="radio" name="analysisType" id="standard" value="default_analysis" class="card-radio" checked>
-                    <label for="standard" class="analysis-card">
-                        <span class="preview-icon" onclick="previewPrompt('default_analysis', event)" title="Preview prompt template">?</span>
-                        <div class="card-icon">🎯</div>
-                        <div class="card-title">Standard</div>
-                        <div class="card-description">Balanced analysis</div>
-                        <div class="card-time">⏱ ~45 sec</div>
+                    <label for="standard" class="analysis-card-premium">
+                        <span class="preview-icon-premium" onclick="previewPrompt('default_analysis', event)" title="Preview prompt template">?</span>
+                        <div class="card-icon-premium">🎯</div>
+                        <div class="card-content-premium">
+                            <div class="card-title-premium">Standard Analysis</div>
+                            <div class="card-description-premium">Balanced depth • Comprehensive</div>
+                            <div class="card-time-premium">⏱ ~45 seconds</div>
+                        </div>
                     </label>
 
                     <input type="radio" name="analysisType" id="verbose" value="verbose_analysis" class="card-radio">
-                    <label for="verbose" class="analysis-card">
-                        <span class="preview-icon" onclick="previewPrompt('verbose_analysis', event)" title="Preview prompt template">?</span>
-                        <div class="card-icon">📊</div>
-                        <div class="card-title">Deep Dive</div>
-                        <div class="card-description">Comprehensive insights</div>
-                        <div class="card-time">⏱ ~60 sec</div>
+                    <label for="verbose" class="analysis-card-premium">
+                        <span class="preview-icon-premium" onclick="previewPrompt('verbose_analysis', event)" title="Preview prompt template">?</span>
+                        <div class="card-icon-premium">📊</div>
+                        <div class="card-content-premium">
+                            <div class="card-title-premium">Deep Dive</div>
+                            <div class="card-description-premium">Maximum detail • Full analysis</div>
+                            <div class="card-time-premium">⏱ ~60 seconds</div>
+                        </div>
                     </label>
                 </div>
-                <button class="analyze-btn-large" onclick="analyzePitch()" id="analyzeBtn">Analyze Pitch</button>
-            </div>
-
-            <div class="output-section">
-                <div id="loading" class="loading hidden">
-                    <div class="spinner"></div>
-                    <p>Analyzing your pitch deck...</p>
-                </div>
-                
-                <div id="resultsContainer" class="hidden">
-                    <label>Analysis Results:</label>
-                    
-                    <div class="button-row">
-                        <div id="sourcesButton" class="sources-button-container hidden">
-                            <button class="toggle-btn" onclick="openSourcesModal()">
-                                View Sources Referenced
-                            </button>
-                        </div>
-                        <div id="promptButton" class="prompt-button-container hidden">
-                            <button class="toggle-btn prompt-btn" onclick="openPromptModal()">
-                                View Prompt Used
-                            </button>
-                        </div>
-                    </div>
-
-                    <div id="result" class="result"></div>
-                </div>
-
-        <!-- Sources Modal Overlay -->
-        <div id="sourcesModal" class="modal hidden" style="display: none;">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h2>Sources Referenced</h2>
-                    <button class="close-btn" onclick="closeSourcesModal()">&times;</button>
-                </div>
-                <div class="modal-body">
-                    <div id="sourcesList" class="sources-list"></div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Prompt Modal Overlay -->
-        <div id="promptModal" class="modal hidden" style="display: none;">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h2>Prompt Used</h2>
-                    <button class="close-btn" onclick="closePromptModal()">&times;</button>
-                </div>
-                <div class="modal-body">
-                    <pre id="promptText" class="prompt-display"></pre>
-                </div>
+                <button class="analyze-btn-premium" onclick="analyzePitch()" id="analyzeBtn">
+                    <span class="btn-text">Analyze Pitch</span>
+                    <span class="btn-icon">→</span>
+                </button>
             </div>
         </div>
 
@@ -143,370 +104,28 @@ Include:
                 </div>
             </div>
         </div>
-            </div>
-        </div>
 
-        <footer>
-            <p>PitchGPT | Developed by Biplop Ghimire and Ethan Yeo</p>
+        <footer class="footer-premium">
+            <p>PitchGPT • Developed by Biplop Ghimire and Ethan Yeo</p>
         </footer>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <script>
-        const examplePitch = `Company: EcoCharge Solutions
-Problem: Electric vehicle charging is unreliable, slow, and hard to find in urban areas.
-Solution: Smart urban charging pods that integrate with existing parking meters.
-Market: $5B addressable market in top 10 US cities.
-Traction: 
-- 50 pods installed in Boston
-- $200K monthly recurring revenue
-- 98% uptime rate
-- Partnership with 2 major parking operators
+    <!-- Premium Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay hidden">
+        <div class="loading-content">
+            <div class="loading-spinner">
+                <div class="spinner-ring"></div>
+                <div class="spinner-ring"></div>
+                <div class="spinner-ring"></div>
+            </div>
+            <h2 class="loading-title">Analyzing Your Pitch</h2>
+            <p class="loading-subtitle">AI is processing your startup insights...</p>
+            <div class="loading-progress">
+                <div class="progress-bar"></div>
+            </div>
+        </div>
+    </div>
 
-Ask: Raising $2M seed round
-- 60% for hardware production
-- 30% for city expansion
-- 10% for team growth
-
-Team:
-- CEO: Former Tesla charging infrastructure lead
-- CTO: MIT electrical engineering PhD
-- COO: Ex-SpotHero operations director`;
-
-        function loadExample() {
-            document.getElementById('pitch').value = examplePitch;
-        }
-
-        let currentPrompt = '';
-
-        function clearAll() {
-            document.getElementById('pitch').value = '';
-            document.getElementById('resultsContainer').classList.add('hidden');
-            document.getElementById('result').innerHTML = '';
-            document.getElementById('sourcesButton').classList.add('hidden');
-            document.getElementById('sourcesList').innerHTML = '';
-            document.getElementById('promptButton').classList.add('hidden');
-            currentPrompt = '';
-            closeSourcesModal();
-            closePromptModal();
-        }
-
-        function openSourcesModal() {
-            const modal = document.getElementById('sourcesModal');
-            modal.style.display = 'flex';
-            modal.classList.remove('hidden');
-            document.body.style.overflow = 'hidden'; // Prevent background scrolling
-        }
-
-        function closeSourcesModal(event) {
-            if (event) {
-                event.stopPropagation();
-            }
-            const modal = document.getElementById('sourcesModal');
-            modal.style.display = 'none';
-            modal.classList.add('hidden');
-            document.body.style.overflow = ''; // Restore scrolling
-        }
-
-        function openPromptModal() {
-            const modal = document.getElementById('promptModal');
-            document.getElementById('promptText').textContent = currentPrompt;
-            modal.style.display = 'flex';
-            modal.classList.remove('hidden');
-            document.body.style.overflow = 'hidden';
-        }
-
-        function closePromptModal(event) {
-            if (event) {
-                event.stopPropagation();
-            }
-            const modal = document.getElementById('promptModal');
-            modal.style.display = 'none';
-            modal.classList.add('hidden');
-            document.body.style.overflow = '';
-        }
-
-        // Prompt templates for preview
-        const promptTemplates = {
-            'concise_analysis': `Analyze this startup pitch concisely. No explanations, just direct points.
-
-**Risks:**
-- [risk 1]
-- [risk 2]
-
-**Due Diligence Questions:**
-- [question 1]
-- [question 2]
-
-Pitch:
-{pitch_text}
-
-Retrieved Context:
-{context}`,
-            'default_analysis': `Analyze this startup pitch and provide:
-1. Two potential risks
-2. Three follow-up questions for due diligence
-
-Use the retrieved context to strengthen or challenge your reasoning.
-
-Pitch:
-{pitch_text}
-
-Retrieved Context:
-{context}
-
----
-Format your response clearly:
-
-**Risks:**
-- ...
-- ...
-
-**Follow-up Questions:**
-- ...
-- ...
-- ...`,
-            'verbose_analysis': `Provide a comprehensive analysis of this startup pitch with detailed insights:
-
-1. **Market Analysis** (3-4 paragraphs):
-   - Assess the market opportunity and size
-   - Evaluate competitive landscape
-   - Identify market trends and dynamics
-
-2. **Business Model Evaluation** (2-3 paragraphs):
-   - Analyze revenue streams and unit economics
-   - Assess scalability and sustainability
-   - Evaluate competitive advantages
-
-3. **Risk Assessment** (4-5 detailed risks):
-   - Provide in-depth analysis of each risk
-   - Include market, execution, financial, and competitive risks
-   - Cite specific concerns from the pitch or retrieved context
-
-4. **Due Diligence Questions** (5-7 questions):
-   - Organize by category (financial, technical, team, market)
-   - Provide context for why each question matters
-
-5. **Investment Recommendation** (2 paragraphs):
-   - Synthesize findings into clear recommendation
-   - Highlight key factors influencing the decision
-
-Use the retrieved context extensively to support your analysis with data and examples.
-
-Pitch:
-{pitch_text}
-
-Retrieved Context:
-{context}`
-        };
-
-        const promptTitles = {
-            'concise_analysis': 'Quick Analysis - Prompt Template',
-            'default_analysis': 'Standard Analysis - Prompt Template',
-            'verbose_analysis': 'Deep Dive Analysis - Prompt Template'
-        };
-
-        function previewPrompt(promptKey, event) {
-            event.preventDefault();
-            event.stopPropagation();
-            
-            const modal = document.getElementById('promptPreviewModal');
-            const titleElement = document.getElementById('previewModalTitle');
-            const textElement = document.getElementById('promptPreviewText');
-            
-            titleElement.textContent = promptTitles[promptKey] || 'Prompt Template Preview';
-            textElement.textContent = promptTemplates[promptKey] || 'Prompt template not found.';
-            
-            modal.classList.remove('hidden');
-            modal.style.display = 'flex';
-            document.body.style.overflow = 'hidden';
-        }
-
-        function closePromptPreviewModal() {
-            const modal = document.getElementById('promptPreviewModal');
-            modal.style.display = 'none';
-            modal.classList.add('hidden');
-            document.body.style.overflow = '';
-        }
-
-        // Close modal on Escape key or clicking outside
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') {
-                closeSourcesModal();
-                closePromptModal();
-                closePromptPreviewModal();
-            }
-        });
-
-        // Close modals when clicking on the background
-        document.addEventListener('DOMContentLoaded', () => {
-            const sourcesModal = document.getElementById('sourcesModal');
-            sourcesModal.addEventListener('click', (e) => {
-                if (e.target === sourcesModal) {
-                    closeSourcesModal();
-                }
-            });
-
-            const promptModal = document.getElementById('promptModal');
-            promptModal.addEventListener('click', (e) => {
-                if (e.target === promptModal) {
-                    closePromptModal();
-                }
-            });
-            
-            const promptPreviewModal = document.getElementById('promptPreviewModal');
-            promptPreviewModal.addEventListener('click', (e) => {
-                if (e.target === promptPreviewModal) {
-                    closePromptPreviewModal();
-                }
-            });
-        });
-
-        function displaySources(contextText) {
-            const sourcesButton = document.getElementById('sourcesButton');
-            const sourcesList = document.getElementById('sourcesList');
-            
-            if (!contextText || contextText.trim() === '' || contextText.includes('No retrieved context')) {
-                sourcesButton.classList.add('hidden');
-                return;
-            }
-            
-            // Parse the context - format is:
-            // - Source: filename (page X)
-            //   - snippet 1
-            //   - snippet 2
-            const sourceBlocks = contextText.split(/^- Source:/im).filter(s => s.trim());
-            
-            if (sourceBlocks.length > 0) {
-                sourcesButton.classList.remove('hidden');
-                
-                sourcesList.innerHTML = sourceBlocks.map(block => {
-                    const lines = block.trim().split('\n');
-                    let header = lines[0].trim();
-                    const snippets = lines.slice(1)
-                        .filter(l => l.trim().startsWith('-'))
-                        .map(l => l.replace(/^\s*-\s*/, '').trim());
-                    
-                    // Extract full path and clean filename
-                    // Format: "pitchgpt_rag/data/filename.pdf (page X)"
-                    const pathMatch = header.match(/(.+?)(?:\s*\(page\s+\d+\))?$/);
-                    if (pathMatch) {
-                        const fullPath = pathMatch[1].trim();
-                        const filename = fullPath.split('/').pop(); // Get just the filename
-                        const pageMatch = header.match(/\(page\s+(\d+)\)/i);
-                        const pageInfo = pageMatch ? ` (page ${pageMatch[1]})` : '';
-                        
-                        // Create download link - use /data endpoint
-                        const downloadPath = `/data/${filename}`;
-                        
-                        return `
-                            <div class="source-card">
-                                <div class="source-header">
-                                    <span class="source-icon"></span>
-                                    <a href="${downloadPath}" download="${filename}" class="source-link" title="Download ${filename}">
-                                        ${filename}${pageInfo}
-                                    </a>
-                                </div>
-                                ${snippets.length > 0 ? `
-                                    <div class="source-snippets">
-                                        ${snippets.map(s => `<div class="source-snippet">"${s}"</div>`).join('')}
-                                    </div>
-                                ` : ''}
-                            </div>
-                        `;
-                    }
-                    
-                    // Fallback if parsing fails
-                    return `
-                        <div class="source-card">
-                            <div class="source-header">
-                                <span class="source-icon">📄</span>
-                                <span>${header}</span>
-                            </div>
-                            ${snippets.length > 0 ? `
-                                <div class="source-snippets">
-                                    ${snippets.map(s => `<div class="source-snippet">"${s}"</div>`).join('')}
-                                </div>
-                            ` : ''}
-                        </div>
-                    `;
-                }).join('');
-            } else {
-                sourcesButton.classList.add('hidden');
-            }
-        }
-
-        async function analyzePitch() {
-            const pitchText = document.getElementById('pitch').value.trim();
-            
-            if (!pitchText) {
-                alert('Please enter a pitch deck to analyze');
-                return;
-            }
-
-            const resultDiv = document.getElementById('result');
-            const loadingDiv = document.getElementById('loading');
-            const analyzeBtn = document.getElementById('analyzeBtn');
-
-            // Show loading
-            loadingDiv.classList.remove('hidden');
-            resultDiv.innerHTML = '';
-            analyzeBtn.disabled = true;
-
-            try {
-                const promptType = document.querySelector('input[name="analysisType"]:checked').value;
-                
-                const response = await fetch('/analyze', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        pitch_text: pitchText,
-                        prompt_key: promptType
-                    })
-                });
-
-                const data = await response.json();
-
-                if (response.ok && data.success) {
-                    // Show results container
-                    document.getElementById('resultsContainer').classList.remove('hidden');
-                    
-                    // Display sources if available
-                    if (data.context) {
-                        displaySources(data.context);
-                    }
-
-                    // Store and show prompt button
-                    if (data.prompt) {
-                        currentPrompt = data.prompt;
-                        document.getElementById('promptButton').classList.remove('hidden');
-                    }
-                    
-                    // Render main analysis as Markdown
-                    resultDiv.innerHTML = marked.parse(data.analysis);
-                    resultDiv.classList.remove('error');
-                } else {
-                    document.getElementById('resultsContainer').classList.remove('hidden');
-                    resultDiv.innerHTML = `<strong>Error:</strong> ${data.detail || data.error || 'Analysis failed'}`;
-                    resultDiv.classList.add('error');
-                }
-            } catch (error) {
-                resultDiv.innerHTML = `<strong>Error:</strong> ${error.message}. Make sure the API server is running.`;
-                resultDiv.classList.add('error');
-            } finally {
-                loadingDiv.classList.add('hidden');
-                analyzeBtn.disabled = false;
-            }
-        }
-
-        // Allow Enter+Cmd/Ctrl to submit
-        document.getElementById('pitch').addEventListener('keydown', (e) => {
-            if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
-                analyzePitch();
-            }
-        });
-    </script>
+    <script src="/static/main.js"></script>
 </body>
 </html>

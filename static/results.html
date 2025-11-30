@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analysis Results - PitchGPT</title>
+    <link rel="stylesheet" href="/static/styles.css?v=2">
+</head>
+<body>
+    <div class="container">
+        <div class="content">
+            <button class="back-btn-floating" onclick="window.location.href='/'">
+                <span class="back-arrow">←</span>
+                <span>New Analysis</span>
+            </button>
+            
+            <div class="results-hero">
+                <h1 class="results-title-hero">Analysis Results</h1>
+                <p class="results-subtitle">Powered by AI-driven insights</p>
+            </div>
+
+            <div class="action-cards">
+                <div id="sourcesButton" class="action-card hidden" onclick="openSourcesModal()">
+                    <div class="action-card-icon">📄</div>
+                    <div class="action-card-content">
+                        <h3>Sources</h3>
+                        <p>Referenced documents</p>
+                    </div>
+                </div>
+                <div id="promptButton" class="action-card hidden" onclick="openPromptModal()">
+                    <div class="action-card-icon">🧠</div>
+                    <div class="action-card-content">
+                        <h3>Prompt</h3>
+                        <p>View analysis template</p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="result" class="result-premium"></div>
+        </div>
+
+        <!-- Sources Modal Overlay -->
+        <div id="sourcesModal" class="modal hidden" style="display: none;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Sources Referenced</h2>
+                    <button class="close-btn" onclick="closeSourcesModal()">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div id="sourcesList" class="sources-list"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Prompt Modal Overlay -->
+        <div id="promptModal" class="modal hidden" style="display: none;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Prompt Used</h2>
+                    <button class="close-btn" onclick="closePromptModal()">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <pre id="promptText" class="prompt-display"></pre>
+                </div>
+            </div>
+        </div>
+
+        <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+        <script src="/static/results.js"></script>
+    </div>
+</body>
+</html>
